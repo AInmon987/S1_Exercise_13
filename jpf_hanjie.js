@@ -55,6 +55,8 @@
 */
 window.onload = init;
 
+var puzzleCells;
+var cellBackground;
 
 function init() {
       //insert the title for the first puzzle.
@@ -69,7 +71,12 @@ function init() {
             puzzleButtons[i].onclick = swapPuzzle;
 
       }
+      setupPuzzle();
+
 }
+
+//add an event listener for the mouseup event
+document.addEventListener("mouseup", endBackground);
 
 function swapPuzzle(e) {
       // retrieve the ID of the clicked button.
@@ -84,18 +91,51 @@ function swapPuzzle(e) {
                   document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle1Hint, puzzle1Rating, puzzle1);
                   break;
             case "puzzle2":
-            document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle2Hint, puzzle2Rating, puzzle2);
-            
-            default:
+                  document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle2Hint, puzzle2Rating, puzzle2);
                   break;
+            case "puzzle3":
+                  document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle3Hint, puzzle3Rating, puzzle3);
+                  break;
+      }
+      setupPuzzle();
+
+
+}
+
+function setupPuzzle() {
+      //match the data cells in the puzzle
+      puzzleCells = document.querySelectorAll("table#hanjieGrid td");
+
+      //set the initial color of each cell to gold 
+      for (var i = 0; i < puzzleCells.length; i++) {
+            puzzleCells[i].style.backgroundColor = "rgb(233, 207, 29)";
+            //set the cell background color in responde to the mousedown event.
+            puzzleCells[i].onmousedown = setBackground;
       }
 }
 
+function setBackground(e) {
+      cellBackground = "rgb(101, 101, 101)";
+      e.target.style.backgroundColor = cellBackground;
 
+      //create an event listener for ever puzzle cell
+      for (var i = 0; i < puzzleCells.length; i++) {
+            puzzleCells[i].addEventListener("mouseenter", endBackground);
 
+      }
+}
 
+function extendBackground(e) {
+      e.target.style.backgroundColor = cellBackground;
+}
 
+function endBackground(e) {
+      //remove the vent listener for every puzzle cell
+      for (var i = 0; i < puzzleCells.length; i++) {
+            puzzleCells[i].removeEventListener("mouseup", extendBackground);
 
+      }
+}
 /* ================================================================= */
 
 function drawPuzzle(hint, rating, puzzle) {
